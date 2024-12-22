@@ -3,7 +3,7 @@ import math
 class Point:
     def __init__(self,cords,number=None):
         self.cords = cords
-        self.axes = len(self.cords)
+        self.amount_of_dimensions = len(self.cords)
         self.number = number
 
     def __str__(self):
@@ -20,20 +20,6 @@ class Rectangle:
             self.lower_left = lower_left
             self.upper_right = upper_right
 
-    # def devide_by_two(self, axes, division_line):
-    #     ll1 = self.lower_left
-    #     ur2 = self.upper_right
-
-    #     ur1_cords = self.upper_right.cords
-    #     ur1_cords[axes] = division_line
-    #     ur1 = Point(ur1_cords)
-
-    #     ll2_cords = self.lower_left.cords
-    #     ll2_cords[axes] = division_line
-    #     ll2 = Point(ur1_cords)
-        
-    #     return Rectangle(ll1,ur1), Rectangle(ll2,ur2)
-    
     def from_Point_list(self,list_of_Point):
         lower_left = list(list_of_Point[0].cords)
         upper_right = list(list_of_Point[0].cords)
@@ -89,9 +75,9 @@ class Rectangle:
         res = []
         for point in points:
             print(point)
-            for axes,cord in enumerate(point.cords):
+            for amount_of_dimensions,cord in enumerate(point.cords):
                 flag = True
-                if not (self.lower_left.cords[axes] <= cord <= self.upper_right.cords[axes]):
+                if not (self.lower_left.cords[amount_of_dimensions] <= cord <= self.upper_right.cords[amount_of_dimensions]):
                     flag = False
                     break
             if flag:
@@ -100,23 +86,25 @@ class Rectangle:
 
 
 class KdTreeNode:
-    def __init__(self,points,axes,depth,rectangle=None):
-        self.axes = axes
+    def __init__(self,points,amount_of_dimensions,depth,rectangle=None):
+        self.amount_of_dimensions = amount_of_dimensions
         self.depth = depth
         self.points = points
         self.left = None
         self.right = None
-        self.rectangle = rectangle
-        self.rectangle = Rectangle(None,None,points)
+        if rectangle:
+            self.rectangle = rectangle
+        else:
+            self.rectangle = Rectangle(None,None,points)
         self.build()
 
     def build(self):
         if len(self.points)==1: return
         self.points.sort(key = lambda x: x.cords[self.depth])
-        print(self.points[math.ceil(len(self.points)/2)].cords[self.depth])
-        left_rec, right_rec = self.devide_by_two(self.rectangle, self.depth, self.points[math.ceil(len(self.points)/2)].cords[(self.depth+1)%self.axes])
-        self.left = KdTreeNode(deepcopy(self.points[0:math.ceil(len(self.points)/2)]),self.axes, (self.depth+1)%self.axes, left_rec)
-        self.right = KdTreeNode(deepcopy(self.points[math.ceil(len(self.points)/2):]),self.axes, (self.depth+1)%self.axes, right_rec )
+        print(self.points[math.ceil(len(self.points)/2)-1].cords[self.depth])
+        left_rec, right_rec = self.devide_by_two(self.rectangle, (self.depth)%self.amount_of_dimensions, self.points[math.ceil(len(self.points)/2)-1].cords[(self.depth)%self.amount_of_dimensions])
+        self.left = KdTreeNode(self.points[0:math.ceil(len(self.points)/2)],self.amount_of_dimensions, (self.depth+1)%self.amount_of_dimensions, left_rec)
+        self.right = KdTreeNode(self.points[math.ceil(len(self.points)/2):],self.amount_of_dimensions, (self.depth+1)%self.amount_of_dimensions, right_rec )
     
     def print_tree(self):
         print(self.points,self.depth, self.rectangle)
@@ -125,17 +113,17 @@ class KdTreeNode:
         if self.right:
             self.right.print_tree()
 
-    def devide_by_two(self,rec, axes, division_line):
+    def devide_by_two(self,rec, amount_of_dimensions, division_line):
         ll1 = rec.lower_left
         ur2 = rec.upper_right
 
         ur1_cords = deepcopy(rec.upper_right.cords)
-        ur1_cords[axes] = division_line
+        ur1_cords[amount_of_dimensions] = division_line
         ur1 = Point(ur1_cords)
 
         ll2_cords = deepcopy(rec.lower_left.cords)
-        ll2_cords[axes] = division_line
-        ll2 = Point(ur1_cords)
+        ll2_cords[amount_of_dimensions] = division_line
+        ll2 = Point(ll2_cords)
         
         return Rectangle(ll1,ur1), Rectangle(ll2,ur2)
     
@@ -153,12 +141,12 @@ class KdTreeNode:
         return []
     
 class KdTree:
-    def __init__(self, points, axes, begining_depth=0):
+    def __init__(self, points, amount_of_dimensions, begining_depth=0):
         points = [Point(point,e+1) for e,point in enumerate(points)]
         print(points)
         self.begining_depth = begining_depth
-        self.root = KdTreeNode(points,axes,begining_depth,Rectangle(None,None,points))
-        self.axes = axes
+        self.root = KdTreeNode(points,amount_of_dimensions,begining_depth,Rectangle(None,None,points))
+        self.amount_of_dimensions = amount_of_dimensions
         self.points = points
         
     def search(self, region):
@@ -171,5 +159,5 @@ test = [(-5,1.5),(-3,4),(-2.5,1),(-5,7),(-2,6),(5,0),(0,3),(7,1),(2,7),(3,5)]
 a = KdTree(test,2)
 print(a.root.print_tree())
 
-print(a.search(Rectangle(Point((0,0)),Point((3,10)))))
+print(a.search(Rectangle(Point((-3,0)),Point((10,10)))))
 # print([12,32]+[53,1])
