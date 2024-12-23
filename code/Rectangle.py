@@ -5,7 +5,7 @@ class Rectangle:
 
     def __init__(self,lower_left,upper_right):
         if not lower_left.precedens(upper_right):
-            raise ValueError("Prubujesz stworzyć prostokąt o błednych punktach skrajnych")
+            raise ValueError(f"Prubujesz stworzyć prostokąt o błednych punktach skrajnych {lower_left},{upper_right}")
         self.lower_left = lower_left
         self.upper_right = upper_right
     
@@ -39,7 +39,7 @@ class Rectangle:
         """
         Sprawdza, czy other zawiera się w self.
         """
-        return self.lower_left.precedens(other.lower_left) and self.upper_right.precedens(self.upper_right)
+        return self.lower_left.precedens(other.lower_left) and other.upper_right.precedens(self.upper_right)
         
     
     def intersection(self, other):

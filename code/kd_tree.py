@@ -20,9 +20,12 @@ class KdTreeNode:
         if len(points)==1: return
         points.sort(key = lambda x: x.cords[self.depth])
         median = math.ceil(len(points)/2)
-        axes = points[median-1].cords[self.depth%self.amount_of_dimensions]
-        print(axes)
-        left_rec, right_rec = Rectangle.devide_on_half_Rectangle(self.rectangle, (self.depth)%self.amount_of_dimensions, axes)
+
+        while median<len(points)-1 and points[median-1].cords[self.depth%self.amount_of_dimensions] == points[median].cords[self.depth%self.amount_of_dimensions]:
+            median+=1
+
+        self.axes = points[median-1].cords[self.depth%self.amount_of_dimensions]
+        left_rec, right_rec = Rectangle.devide_on_half_Rectangle(self.rectangle, (self.depth)%self.amount_of_dimensions, self.axes)
         self.left = KdTreeNode(points[0:median], self.amount_of_dimensions, (self.depth+1)%self.amount_of_dimensions, left_rec )
         self.right = KdTreeNode(points[median:], self.amount_of_dimensions, (self.depth+1)%self.amount_of_dimensions, right_rec )
     
@@ -56,6 +59,14 @@ class KdTreeNode:
             return self.left.search_in_recangle(region) + self.right.search_in_recangle(region)
         return []
     
+    def check_contains(self,point):
+        print(self.rectangle)
+        if self.is_leaf():
+            return point == self.points[0]
+        if self.axes < point.cords[(self.depth)%self.amount_of_dimensions]:
+            return self.right.check_contains(point)
+        return self.left.check_contains(point)
+    
 class KdTree:
     def __init__(self, points, amount_of_dimensions, begining_axis=0, is_points_in_vertix = False):
         # points jest tablicą krotek określających położenie punktu w przestrzeni
@@ -69,11 +80,10 @@ class KdTree:
         # korzeń drzewa, reszta tworzy się rekursywnie
         self.root = KdTreeNode(points, 
                                amount_of_dimensions, 
-                                begining_axis, 
-                                    Rectangle.create_Rectangle_from_Point_list(points), 
-                                        is_points_in_vertix)
+                               begining_axis, 
+                               Rectangle.create_Rectangle_from_Point_list(points), 
+                               is_points_in_vertix)
         self.amount_of_dimensions = amount_of_dimensions
-        self.points = points
         
     def search_in_recangle(self, region, return_tab_of_Points = False):
         print(region)
@@ -97,10 +107,17 @@ class KdTree:
         else:
             return [point.cords for point in self.root.search_in_recangle(region)]
 
+    def check_contains(self,point):
+        if not isinstance(point, Point):
+            if len(point) != self.amount_of_dimensions:
+                raise ValueError("Podano nieprawidołowy punkt do znalezienia")
+            point = Point(point)
+        return self.root.check_contains(point)
     
-test = [(-5,1.5),(-3,4),(-2.5,1),(-5,7),(-2,6),(5,0),(0,3),(7,1),(2,7),(3,5),(2,7)]
+test = [(-5,1.5),(-3,4),(-2.5,1),(-5,7),(-2,6),(5,0),(0,3),(7,1),(2,7),(3,5)]
 a = KdTree(test,2)
 print(a.root.print_tree())
 
 print(a.search_in_recangle(((-3,0),(10,10))))
-# print([12,32]+[53,1])
+for poin in test:
+    print(a.check_contains(poin))
