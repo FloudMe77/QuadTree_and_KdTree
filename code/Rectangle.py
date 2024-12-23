@@ -6,6 +6,8 @@ class Rectangle:
         if list_of_Point:
             self.lower_left, self.upper_right = self.from_Point_list(list_of_Point)
         else:
+            if not lower_left.precedens(upper_right):
+                raise ValueError("Prubujesz stworzyć prostokąt o błednych punktach skrajnych")
             self.lower_left = lower_left
             self.upper_right = upper_right
 
@@ -24,31 +26,18 @@ class Rectangle:
     def __repr__(self):
         return self.__str__()
 
-    def is_intersect(self,other):
-        
-        lower_left_1_cords, upper_right_1_cords = self.lower_left.cords, self.upper_right.cords
-        lower_left_2_cords, upper_right_2_cords = other.lower_left.cords, other.upper_right.cords
-
-        # Sprawdź brak przecięcia dla każdego wymiaru
-        for i in range(len(lower_left_1_cords)):  # Zakładamy, że lower_left_1_cords, upper_right_1_cords, lower_left_2_cords, upper_right_2_cords mają ten sam wymiar
-            if upper_right_1_cords[i] < lower_left_2_cords[i] or upper_right_2_cords[i] < lower_left_1_cords[i]:
-                return False  # Prostokąty się nie przecinają
-        return True  # Prostokąty się przecinają
+    def is_intersect(self, other):
+    # Prostokąty nie przecinają się, jeśli jeden leży całkowicie po "prawej/górze" drugiego
+        if self.upper_right.precedens(other.lower_left) or other.upper_right.precedens(self.lower_left):
+            return False # Prostokąty się nie przecinają
+        return True # Prostokąty się przecinają
     
     def is_contained(self, other):
         """
         Sprawdza, czy other zawiera się w self.
         """
-        # R2 = (lower_left_2_cords, upper_right_2_cords) to prostokąt `other`
-        # R1 = (lower_left_1_cords, upper_right_1_cords) to prostokąt `self`
-        lower_left_1_cords, upper_right_1_cords = self.lower_left.cords, self.upper_right.cords
-        lower_left_2_cords, upper_right_2_cords = other.lower_left.cords, other.upper_right.cords
-
-        # Sprawdź zawieranie dla każdego wymiaru
-        for i in range(len(lower_left_1_cords)):  # Zakładamy, że lower_left_1_cords, upper_right_1_cords, lower_left_2_cords, upper_right_2_cords mają tę samą długość
-            if not (lower_left_1_cords[i] <= lower_left_2_cords[i] <= upper_right_2_cords[i] <= upper_right_1_cords[i]):
-                return False  # R2 nie jest w całości w R1
-        return True  # R2 jest w całości w R1
+        return self.lower_left.precedens(other.lower_left) and self.upper_right.precedens(self.upper_right)
+        
     
     def intersection(self, other):
         lower_left_1_cords, upper_right_1_cords = self.lower_left.cords, self.upper_right.cords
@@ -63,10 +52,9 @@ class Rectangle:
     def points_in_rectangle(self,points):
         res = []
         for point in points:
-            print(point)
-            for amount_of_dimensions,cord in enumerate(point.cords):
+            for dimension,cord in enumerate(point.cords):
                 flag = True
-                if not (self.lower_left.cords[amount_of_dimensions] <= cord <= self.upper_right.cords[amount_of_dimensions]):
+                if not (self.lower_left.cords[dimension] <= cord <= self.upper_right.cords[dimension]):
                     flag = False
                     break
             if flag:

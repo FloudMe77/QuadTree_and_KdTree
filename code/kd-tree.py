@@ -67,22 +67,47 @@ class KdTreeNode:
 
 
 class KdTree:
-    def __init__(self, points, amount_of_dimensions, begining_axis=0):
-        points = [Point(point,e+1) for e,point in enumerate(points)]
+    def __init__(self, points, amount_of_dimensions, begining_axis=0, is_points_in_vertix = True):
+        # points jest tablicą krotek określających położenie punktu w przestrzeni
+        # for point in points:
+        for point in points:
+            if len(point)!= amount_of_dimensions:
+                raise ValueError("zbiór punktów nie zgadza się z deklarowaną ilością wymiarów")
+            
+        points = [Point(point) for point in points]
+        # oś w zdłuż której będzie pierwszy podział
         self.begining_axis = begining_axis
+        # korzeń drzewa, reszta tworzy się rekursywnie
         self.root = KdTreeNode(points,amount_of_dimensions,begining_axis,Rectangle(None,None,points))
         self.amount_of_dimensions = amount_of_dimensions
         self.points = points
         
-    def search_in_recangle(self, region):
+    def search_in_recangle(self, region, return_tab_of_Points = False):
         print(region)
+        if not isinstance(region, Rectangle):
+            if len(region) == 2 and \
+                 len(region[0])==self.amount_of_dimensions and \
+                 len(region[1])==self.amount_of_dimensions: 
+                lower_left = Point(region[0])
+                upper_right = Point(region[1])
+                region = Rectangle(lower_left,upper_right)
+            else:
+                raise ValueError("otrzymany region jest niepoprawny")
+        
+        if not region.upper_right.follow(region.lower_left):
+            raise ValueError("otrzymany region ma złą kolejność wierzchołków")
+        
         region = self.root.rectangle.intersection(region)
-        return self.root.search_in_recangle(region)
+
+        if return_tab_of_Points:
+            return self.root.search_in_recangle(region)
+        else:
+            return [point.cords for point in self.root.search_in_recangle(region)]
 
     
 test = [(-5,1.5),(-3,4),(-2.5,1),(-5,7),(-2,6),(5,0),(0,3),(7,1),(2,7),(3,5)]
 a = KdTree(test,2)
 print(a.root.print_tree())
 
-print(a.search_in_recangle(Rectangle(Point((-3,0)),Point((10,10)))))
+print(a.search_in_recangle(((-3,0),(10,10))))
 # print([12,32]+[53,1])

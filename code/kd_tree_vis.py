@@ -31,12 +31,6 @@ class KdTreeNode:
         self.left = KdTreeNode(self.points[0:median], self.amount_of_dimensions, (self.depth+1)%self.amount_of_dimensions, left_rec )
         self.right = KdTreeNode(self.points[median:], self.amount_of_dimensions, (self.depth+1)%self.amount_of_dimensions, right_rec )
     
-    def print_tree(self):
-        print(self.points,self.depth, self.rectangle)
-        if self.left:
-            self.left.print_tree()
-        if self.right:
-            self.right.print_tree()
 
     # możliwe, że powinna zostać przeniesiona gdzieś indziej
     def devide_on_half_rectangle(self,rec, dimension_numer, axes):
@@ -93,5 +87,6 @@ def give_visualization(test,ll,ur):
     vis = Visualizer()
     a = KdTree(test,2)
 
-    a.search_in_recangle(Rectangle(Point(ll),Point(ur)))
+    print(a.search_in_recangle(Rectangle(Point(ll),Point(ur))))
+    
     return vis
