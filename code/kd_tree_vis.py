@@ -124,6 +124,7 @@ class KdTreeNode:
         self.rectangle = rectangle
         if len(points)==1:
             vis.add_polygon(self.rectangle.get_all_vertix_from_rectangle_on_2d(), fill = False, alpha = 0.5)
+            
         self.build(points)
 
     def build(self,points):

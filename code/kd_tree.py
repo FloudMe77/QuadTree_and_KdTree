@@ -1,7 +1,7 @@
 import math
 from Point import Point
 from Rectangle import Rectangle
-
+import tests.generate_tests as test
 class KdTreeNode:
     def __init__(self,points,amount_of_dimensions,depth,rectangle,is_points_in_vertix=True):
         if is_points_in_vertix or len(points)==1:
@@ -99,7 +99,8 @@ class KdTree:
         
         if not region.upper_right.follow(region.lower_left):
             raise ValueError("otrzymany region ma złą kolejność wierzchołków")
-        
+        if not region.is_intersect(self.root.rectangle):
+            return []
         region = self.root.rectangle.intersection(region)
 
         if return_tab_of_Points:
@@ -114,10 +115,10 @@ class KdTree:
             point = Point(point)
         return self.root.check_contains(point)
     
-test = [(-5,1.5),(-3,4),(-2.5,1),(-5,7),(-2,6),(5,0),(0,3),(7,1),(2,7),(3,5)]
-a = KdTree(test,2)
-print(a.root.print_tree())
+# test = test.generate_multidimensional_cluster(5,2,10,4)
+# a = KdTree(test,2)
+# print(a.root.print_tree())
 
-print(a.search_in_recangle(((-3,0),(10,10))))
-for poin in test:
-    print(a.check_contains(poin))
+# print(a.search_in_recangle(((-3,0,0),(10,10,0))))
+# for poin in test:
+#     print(a.check_contains(poin))
