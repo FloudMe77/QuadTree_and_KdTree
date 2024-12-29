@@ -28,3 +28,18 @@ class Point:
             if self.cords[i] > other.cords[i]:
                 return False
         return True
+
+    def lower_left(self,other):
+        # returns point with minimal coordinates from both points
+        if self.amount_of_dimensions != other.amount_of_dimensions:
+            raise ValueError("niepoprawne wymiary porównywanych punktów")
+
+        return Point([min(self.cords[i],other.cords[i]) for i in range(self.amount_of_dimensions)])
+
+    def upper_right(self, other):
+        # returns point with maximum coordinates from both points
+        if self.amount_of_dimensions != other.amount_of_dimensions:
+            raise ValueError("niepoprawne wymiary porównywanych punktów")
+
+        return Point([max(self.cords[i], other.cords[i]) for i in range(self.amount_of_dimensions)])
+
