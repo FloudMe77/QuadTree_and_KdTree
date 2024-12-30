@@ -32,18 +32,37 @@ class KdTreeNode:
                 r=i-1
         return p
     
-    def build(self,points):
-        points.sort(key = lambda x: x.cords[self.dimension_number])
-        median = math.ceil(len(points)/2)
+    def bsearch_left(self,t,index,val):
+        p=0
+        r=len(t)-1
+        while p<r:
+            
+            i=(p+r)//2
+            if t[i].cords[index]<val:
+                p=i+1
+            else:
+                r=i
+        return p
 
-        median = self.bsearch_right(points,self.dimension_number,points[median].cords[self.dimension_number])
+    def build(self,points):
+        for _ in range(self.dimensions_amount):
+            points.sort(key = lambda x: x.cords[self.dimension_number])
+            median = math.ceil(len(points)/2)
+            median = self.bsearch_right(points,self.dimension_number,points[median].cords[self.dimension_number])
+            left_median = self.bsearch_left(points,self.dimension_number,points[median].cords[self.dimension_number])
+
+            if median - left_median > 3*len(points)//4:
+                self.depth +=1
+                self.dimension_number = (self.dimension_number+1)%self.dimensions_amount
+            else:
+                break
 
         self.axes = points[median-1].cords[self.dimension_number]
-        left_rec, right_rec = self.split_region(self.rectangle, self.dimension_number, self.axes)
+        left_rec, right_rec = self._split_region(self.rectangle, self.dimension_number, self.axes)
         self.left = KdTreeNode(points[0:median], self.dimensions_amount, self.depth+1, left_rec, self.is_points_in_vertix )
         self.right = KdTreeNode(points[median:], self.dimensions_amount, self.depth+1, right_rec, self.is_points_in_vertix )
     
-    def split_region(self,rec, dimension_numer, axes):
+    def _split_region(self,rec, dimension_numer, axes):
         # jeden to dolny, czy tam po lewej
         # drugi to górny czy tam po prawej
         lower_left_1 = rec.lower_left

@@ -34,7 +34,8 @@ class Rectangle:
     # Prostokąty nie przecinają się, jeśli jeden leży całkowicie po "prawej/górze" drugiego
         # if self.upper_right.precedens(other.lower_left) or other.upper_right.precedens(self.lower_left):
         #     return False # Prostokąty się nie przecinają
-        return self.lower_left.precedens(other.upper_right) and self.upper_right.follow(other.lower_left)
+        return self.lower_left.precedens(other.upper_right) and other.lower_left.precedens(self.upper_right)
+        
     
     def is_contained(self, other):
         """
@@ -69,20 +70,3 @@ class Rectangle:
         x1,y1 = self.lower_left.cords
         x2,y2 = self.upper_right.cords
         return [(x1,y1),(x2,y1),(x2,y2),(x1,y2)]
-    
-    @staticmethod
-    def devide_on_half_Rectangle(rec, dimension_numer, axes):
-        # jeden to dolny, czy tam po lewej
-        # drugi to górny czy tam po prawej
-        lower_left_1 = rec.lower_left
-        upper_right_2 = rec.upper_right
-
-        upper_right_1_cords = deepcopy(rec.upper_right.cords)
-        upper_right_1_cords[dimension_numer] = axes
-        upper_right_1 = Point(upper_right_1_cords)
-
-        lower_left_2_cords = deepcopy(rec.lower_left.cords)
-        lower_left_2_cords[dimension_numer] = axes
-        lower_left_2 = Point(lower_left_2_cords)
-        
-        return Rectangle(lower_left_1,upper_right_1), Rectangle(lower_left_2,upper_right_2)
