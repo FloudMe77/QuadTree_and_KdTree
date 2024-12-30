@@ -36,3 +36,30 @@ class QuadTree:
         self.nw = QuadTree(Rectangle(bounds[3].lower_left(center), bounds[3].upper_right(center)), self.max_points, self.depth + 1)
 
         self.divided = True
+
+    def insert(self, point):
+        if not self.rectangle.is_contained(point):
+            return False
+        if len(self.points) < self.max_points:
+            self.points.append(point)
+            return True
+
+        if not self.divided:
+            self.divide()
+
+        return self.se.insert(point) or self.ne.insert(point) or self.sw.insert(point) or self.nw.insert(point)
+
+    def search(self, boundary, found_points):
+        if not self.rectangle.is_intersect(boundary):
+            return False
+
+        for point in self.points:
+            if self.se.is_contained(point):
+                found_points.append(point)
+
+        if self.divided:
+            self.se.search(boundary, found_points)
+            self.ne.search(boundary, found_points)
+            self.sw.search(boundary, found_points)
+            self.nw.search(boundary, found_points)
+        return found_points
