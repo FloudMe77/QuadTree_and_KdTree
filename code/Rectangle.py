@@ -3,16 +3,17 @@ from copy import deepcopy
 
 class Rectangle:
 
-    def __init__(self,lower_left,upper_right):
-        if not lower_left.precedens(upper_right):
-            raise ValueError(f"Prubujesz stworzyć prostokąt o błednych punktach skrajnych {lower_left},{upper_right}")
-        self.lower_left = lower_left
-        self.upper_right = upper_right
+    def __init__(self,lower_left = None, upper_right = None, list_of_Point = None):
+
+        if list_of_Point:
+            self.lower_left, self.upper_right = self.from_Point_list(list_of_Point)
+
+        else:
+            if not lower_left.precedens(upper_right):
+                raise ValueError(f"Prubujesz stworzyć prostokąt o błednych punktach skrajnych {lower_left},{upper_right}")
+            self.lower_left = lower_left
+            self.upper_right = upper_right
     
-    @classmethod
-    def create_Rectangle_from_Point_list(cls,list_of_Point):
-        lower_left, upper_right = cls.from_Point_list(cls,list_of_Point)
-        return cls(lower_left,upper_right)
 
     def from_Point_list(self,list_of_Point):
         lower_left = list(list_of_Point[0].cords)
@@ -31,9 +32,9 @@ class Rectangle:
 
     def is_intersect(self, other):
     # Prostokąty nie przecinają się, jeśli jeden leży całkowicie po "prawej/górze" drugiego
-        if self.upper_right.precedens(other.lower_left) or other.upper_right.precedens(self.lower_left):
-            return False # Prostokąty się nie przecinają
-        return True # Prostokąty się przecinają
+        # if self.upper_right.precedens(other.lower_left) or other.upper_right.precedens(self.lower_left):
+        #     return False # Prostokąty się nie przecinają
+        return self.lower_left.precedens(other.upper_right) and self.upper_right.follow(other.lower_left)
     
     def is_contained(self, other):
         """
