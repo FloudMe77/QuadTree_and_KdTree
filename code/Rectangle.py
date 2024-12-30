@@ -54,17 +54,8 @@ class Rectangle:
             ur[i] = min(ur[i],upper_right_1_cords[i],upper_right_2_cords[i])
         return Rectangle(Point(ll),Point(ur))  # R2 jest w całości w R1
     
-    def points_in_rectangle(self,points):
-        res = []
-        for point in points:
-            for dimension,cord in enumerate(point.cords):
-                flag = True
-                if not (self.lower_left.cords[dimension] <= cord <= self.upper_right.cords[dimension]):
-                    flag = False
-                    break
-            if flag:
-                res.append(point)
-        return res
+    def is_point_in_rectangle(self,point):
+        return point.follow(self.lower_left) and point.precedens(self.upper_right)
     
     def get_all_vertix_from_rectangle_on_2d(self):
         x1,y1 = self.lower_left.cords

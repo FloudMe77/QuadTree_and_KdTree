@@ -2,7 +2,10 @@
 def brute_2d(points,lower_left,upper_right):
     ans=[]
     for point in points:
-        if lower_left[0]<=point[0]<=upper_right[0] and \
-            lower_left[1]<=point[1]<=upper_right[1]:
+        flaga = True
+        for i in range(len(point)):
+            if not lower_left[i]<=point[i]<=upper_right[i]:
+                flaga=False 
+        if flaga:
             ans.append(point)
     return ans

@@ -3,135 +3,8 @@ from visualizer_bit.main import Visualizer
 import math
 from Point import Point
 from Rectangle import Rectangle
-import copy
 from copy import deepcopy
-# class KdTreeNode:
-#     def __init__(self,points,amount_of_dimensions,depth,rectangle,is_points_in_vertix=True):
-#         if is_points_in_vertix or len(points)==1:
-#             self.points = points
-#         else:
-#             self.points = []
 
-#         self.amount_of_dimensions = amount_of_dimensions
-#         self.depth = depth
-#         self.left = None
-#         self.right = None
-#         self.is_points_in_vertix = is_points_in_vertix
-#         self.rectangle = rectangle
-#         if len(points)==1:
-#             vis.add_polygon(self.rectangle.get_all_vertix_from_rectangle_on_2d(), fill = False, alpha = 0.5, color = "purple")
-#             vis.add_point(points[0].cords,color = "orange")
-#         self.build(points)
-
-#     def build(self,points):
-#         if len(points)==1: return
-#         points.sort(key = lambda x: x.cords[self.depth])
-#         while points[0].cords[self.depth]== points[-1].cords[self.depth]:
-#             self.depth = (self.depth+1)%self.amount_of_dimensions
-#             points.sort(key = lambda x: x.cords[self.depth])
-#         median = math.ceil(len(points)/2)
-        
-#         while median<len(points)-1 and points[median-1].cords[self.depth%self.amount_of_dimensions] == points[median].cords[self.depth%self.amount_of_dimensions]:
-#             median+=1
-
-#         self.axes = points[median-1].cords[self.depth%self.amount_of_dimensions]
-#         left_rec, right_rec = Rectangle.devide_on_half_Rectangle(self.rectangle, (self.depth)%self.amount_of_dimensions, self.axes)
-#         self.left = KdTreeNode(points[0:median], self.amount_of_dimensions, (self.depth+1)%self.amount_of_dimensions, left_rec )
-#         self.right = KdTreeNode(points[median:], self.amount_of_dimensions, (self.depth+1)%self.amount_of_dimensions, right_rec )
-    
-#     def print_tree(self):
-#         print(self.points,self.depth, self.rectangle)
-#         if self.left:
-#             self.left.print_tree()
-#         if self.right:
-#             self.right.print_tree()
-
-#     def is_leaf(self):
-#         return self.left is None and self.right is None
-
-#     def get_points(self):
-#         if self.is_points_in_vertix or self.is_leaf():
-#             return self.points
-#         else:
-#             return self.left.get_points() + self.right.get_points()
-
-#     def find_points_in_region(self,region):
-        
-#         if self.is_leaf():
-#             # print(self.points)
-#             # print(region.points_in_rectangle(self.points),"cos")
-#             vis.add_point([(point.cords[0],point.cords[1]) for point in region.points_in_rectangle(self.points)], color = "lime")
-#             return region.points_in_rectangle(self.points)
-#         if region.is_contained(self.rectangle):
-#             points = self.get_points()
-#             print(points)
-#             vis.add_point([(point.cords[0],point.cords[1]) for point in points], color = "lime")
-#             return points
-#         if region.is_intersect(self.rectangle):
-#             return self.left.find_points_in_region(region) + self.right.find_points_in_region(region)
-#         return []
-    
-#     def check_contains(self,point):
-#         if self.is_leaf():
-#             return point == self.points[0]
-#         if self.axes < point.cords[(self.depth)%self.amount_of_dimensions]:
-#             return self.right.check_contains(point)
-#         return self.left.check_contains(point)
-    
-# class KdTree:
-#     def __init__(self, points, amount_of_dimensions, begining_axis=0, is_points_in_vertix = False):
-#         # points jest tablicą krotek określających położenie punktu w przestrzeni
-#         for point in points:
-#             if len(point)!= amount_of_dimensions:
-#                 raise ValueError("zbiór punktów nie zgadza się z deklarowaną ilością wymiarów")
-            
-#         points = [Point(point) for point in points]
-#         vis.add_point([(point.cords[0],point.cords[1]) for point in points],color = "blue")
-#         # oś w zdłuż której będzie pierwszy podział
-#         self.begining_axis = begining_axis
-#         # korzeń drzewa, reszta tworzy się rekursywnie
-#         self.root = KdTreeNode(points, 
-#                                amount_of_dimensions, 
-#                                begining_axis, 
-#                                Rectangle.create_Rectangle_from_Point_list(points), 
-#                                is_points_in_vertix)
-#         self.amount_of_dimensions = amount_of_dimensions
-        
-#     def find_points_in_region(self, region, return_tab_of_Points = False):
-#         vis.add_polygon(region.get_all_vertix_from_rectangle_on_2d(), fill = True, color = "grey",alpha=0.4)
-#         if not isinstance(region, Rectangle):
-#             if len(region) == 2 and \
-#                  len(region[0])==self.amount_of_dimensions and \
-#                  len(region[1])==self.amount_of_dimensions: 
-#                 lower_left = Point(region[0])
-#                 upper_right = Point(region[1])
-#                 region = Rectangle(lower_left,upper_right)
-#             else:
-#                 raise ValueError("otrzymany region jest niepoprawny")
-        
-#         if not region.upper_right.follow(region.lower_left):
-#             raise ValueError("otrzymany region ma złą kolejność wierzchołków")
-        
-#         if not region.is_intersect(self.root.rectangle):
-#             return []
-#         region = self.root.rectangle.intersection(region)
-
-#         if return_tab_of_Points:
-#             return self.root.find_points_in_region(region)
-#         else:
-#             return [point.cords for point in self.root.find_points_in_region(region)]
-
-#     def check_contains(self,point):
-#         if not isinstance(point, Point):
-#             if len(point) != self.amount_of_dimensions:
-#                 raise ValueError("Podano nieprawidołowy punkt do znalezienia")
-#             point = Point(point)
-#         return self.root.check_contains(point)
-    
-import math
-from Point import Point
-from Rectangle import Rectangle
-# import tests.generate_tests as test
 ########
 begin_points_color = "black"
 added_to_structer_color = '#40BFEF'
@@ -230,12 +103,12 @@ class KdTreeNode:
 
         return Rectangle(lower_left_1,upper_right_1), Rectangle(lower_left_2,upper_right_2)
 
-    def print_tree(self):
-        print(self.points,self.depth, self.rectangle)
-        if self.left:
-            self.left.print_tree()
-        if self.right:
-            self.right.print_tree()
+    # def print_tree(self):
+    #     print(self.points,self.depth, self.rectangle)
+    #     if self.left:
+    #         self.left.print_tree()
+    #     if self.right:
+    #         self.right.print_tree()
 
     def is_leaf(self):
         return self.left is None and self.right is None
@@ -249,14 +122,15 @@ class KdTreeNode:
     def find_points_in_region(self,region):
         
         if self.is_leaf():
-            ans = region.points_in_rectangle(self.points)
-            if len(ans)>0:
+            is_in = region.is_point_in_rectangle(self.points[0])
+            if is_in:
                 tmp = vis.add_polygon(self.rectangle.get_all_vertix_from_rectangle_on_2d(), fill = True, color = "green", alpha=0.2)
+                vis.add_point([point.cords for point in self.points],color="lime")
             else:
                 tmp = vis.add_polygon(self.rectangle.get_all_vertix_from_rectangle_on_2d(), fill = True, color = "red", alpha=0.2)
-            vis.add_point([point.cords for point in ans],color="lime")
+            
             vis.remove_figure(tmp)
-            return ans
+            return self.points if is_in else []
         
         if region.is_contained(self.rectangle):
             points = self.get_points()
@@ -269,13 +143,11 @@ class KdTreeNode:
             tmp = vis.add_polygon(self.rectangle.get_all_vertix_from_rectangle_on_2d(), fill = True, color = "grey", alpha=0.2)
             vis.remove_figure(tmp)
             return self.left.find_points_in_region(region) + self.right.find_points_in_region(region)
-        print("cos")
         tmp = vis.add_polygon(self.rectangle.get_all_vertix_from_rectangle_on_2d(), fill = True, color = "red", alpha=0.2)
         vis.remove_figure(tmp)
         return []
     
     def check_contains(self,point):
-        print(self.rectangle)
         if self.is_leaf():
             return point == self.points[0]
         if self.axes < point.cords[self.dimension_number]:
@@ -285,7 +157,7 @@ class KdTreeNode:
 class KdTree:
     def __init__(self, points, dimensions_amount, begining_axis=0):
         # points jest tablicą krotek określających położenie punktu w przestrzeni
-        self.points = copy.deepcopy(points)
+        self.points = deepcopy(points)
         for point in points:
             if len(point)!= dimensions_amount:
                 raise ValueError("zbiór punktów nie zgadza się z deklarowaną ilością wymiarów")
@@ -317,9 +189,7 @@ class KdTree:
             return []
         
         vis.add_polygon(region.get_all_vertix_from_rectangle_on_2d(), fill = True, color = "blue",alpha=0.2)
-        print(region)
         region = self.root.rectangle.intersection(region)
-        print(region)
         return [point.cords for point in self.root.find_points_in_region(region)]
 
     def check_contains(self,point):
@@ -339,12 +209,10 @@ class visualization:
         tab_of_line = []
         vis = Visualizer()
         vis.clear()
-        self.kd_tree = KdTree(test,2)
-
-        # print(a.find_points_in_region(Rectangle(Point(ll),Point(ur))))
-        
+        self.kd_tree = KdTree(test,2)    
         return vis
-    def give_visualization_of_search(self,find_ll,find_ur):
+    
+    def give_visualization_of_search(self,find_ll,find_ur,print_output = False):
         global vis
         global tab_of_line
         global vis_stack
@@ -354,5 +222,8 @@ class visualization:
         vis.add_point(self.kd_tree.points,color = added_to_structer_color)
         for ll,ur in tab_of_line:
             vis.add_line_segment((ll,ur),color=grid_constr_color,alpha = 0.4)
-        print(self.kd_tree.find_points_in_region(Rectangle(Point(find_ll),Point(find_ur))))
+        if print_output:
+            print(self.kd_tree.find_points_in_region(Rectangle(Point(find_ll),Point(find_ur))))
+        else:
+            self.kd_tree.find_points_in_region(Rectangle(Point(find_ll),Point(find_ur)))
         return vis
