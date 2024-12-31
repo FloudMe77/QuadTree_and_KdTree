@@ -1,5 +1,5 @@
 
-def brute_2d(points,lower_left,upper_right):
+def brute_force_rectangle(points,lower_left,upper_right):
     ans=[]
     for point in points:
         flaga = True

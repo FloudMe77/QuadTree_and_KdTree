@@ -21,16 +21,14 @@ def generate_random_on_line(n,a,b,min_x,max_x,thick):
         ans.append((x, y))
     return ans
 
-def generate_grid_normal(n, lower_left, upper_right):
+def generate_grid_normal(n, min_x,max_x,min_y,max_y):
     # n - ilość punktów w lini
-    x1,y1 = lower_left
-    x2,y2 = upper_right
-    gap_x = (x2-x1)/(n-1)
-    gap_y = (y2-y1)/(n-1)
+    gap_x = (max_x-min_x)/(n-1)
+    gap_y = (max_y-min_y)/(n-1)
     ans = []
     for i in range(n):
         for j in range(n):
-            ans.append((x1 + i * gap_x, y1 + j * gap_y))
+            ans.append((min_x + i * gap_x, min_y + j * gap_y))
     return ans
 
 def generate_on_one_ax(n,min_x,max_x,y=0):
@@ -158,3 +156,5 @@ def generate_multidimensional_cluster(mean, std, n, k):
     # Tworzymy macierz punktów (n punktów, każdy o k wymiarach)
     points = np.random.normal(loc=mean, scale=std, size=(n, k))
     return points
+
+## dodać funkcje zbiorczą
