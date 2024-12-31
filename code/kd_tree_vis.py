@@ -15,7 +15,7 @@ vis_stack=[]
 tab_of_line=[]
 ########
 class KdTreeNode:
-    def __init__(self,points, dimensions_amount,depth,rectangle, is_points_in_vertix=False):
+    def __init__(self,points, dimensions_amount,depth,rectangle, is_points_in_vertix=True):
         
         self.dimensions_amount = dimensions_amount
         self.depth = depth
@@ -68,17 +68,19 @@ class KdTreeNode:
         for _ in range(self.dimensions_amount):
             points.sort(key = lambda x: x.cords[self.dimension_number])
             median = math.ceil(len(points)/2)
+            median-=1
             median = self.bsearch_right(points,self.dimension_number,points[median].cords[self.dimension_number])
             left_median = self.bsearch_left(points,self.dimension_number,points[median].cords[self.dimension_number])
+            median+=1
 
-            if median - left_median > 3*len(points)//4:
+            if median - left_median > 3*len(points)//4 or median == len(points):
                 self.depth +=1
                 self.dimension_number = (self.dimension_number+1)%self.dimensions_amount
             else:
                 break
 
-        self.axes = points[median-1].cords[self.dimension_number]
-        left_rec, right_rec = self._split_region(self.rectangle, self.dimension_number, self.axes)
+        self.axis = points[median-1].cords[self.dimension_number]
+        left_rec, right_rec = self._split_region(self.rectangle, self.dimension_number, self.axis)
         vis.add_line_segment((right_rec.lower_left.cords, left_rec.upper_right.cords), color = grid_constr_color, alpha = 0.5)
         tab_of_line.append((right_rec.lower_left.cords, left_rec.upper_right.cords))
         self.line = (right_rec.lower_left.cords, left_rec.upper_right.cords)
@@ -87,28 +89,28 @@ class KdTreeNode:
         self.left = KdTreeNode(points[0:median], self.dimensions_amount, self.depth+1, left_rec, self.is_points_in_vertix )
         self.right = KdTreeNode(points[median:], self.dimensions_amount, self.depth+1, right_rec, self.is_points_in_vertix )
     
-    def _split_region(self,rec, dimension_numer, axes):
+    def _split_region(self,rec, dimension_numer, axis):
         # jeden to dolny, czy tam po lewej
         # drugi to górny czy tam po prawej
         lower_left_1 = rec.lower_left
         upper_right_2 = rec.upper_right
 
         upper_right_1_cords = deepcopy(rec.upper_right.cords)
-        upper_right_1_cords[dimension_numer] = axes
+        upper_right_1_cords[dimension_numer] = axis
         upper_right_1 = Point(upper_right_1_cords)
 
         lower_left_2_cords = deepcopy(rec.lower_left.cords)
-        lower_left_2_cords[dimension_numer] = axes
+        lower_left_2_cords[dimension_numer] = axis
         lower_left_2 = Point(lower_left_2_cords)
 
         return Rectangle(lower_left_1,upper_right_1), Rectangle(lower_left_2,upper_right_2)
 
-    # def print_tree(self):
-    #     print(self.points,self.depth, self.rectangle)
-    #     if self.left:
-    #         self.left.print_tree()
-    #     if self.right:
-    #         self.right.print_tree()
+    def print_tree(self):
+        print(self.points,self.depth, self.rectangle)
+        if self.left:
+            self.left.print_tree()
+        if self.right:
+            self.right.print_tree()
 
     def is_leaf(self):
         return self.left is None and self.right is None
@@ -150,7 +152,7 @@ class KdTreeNode:
     def check_contains(self,point):
         if self.is_leaf():
             return point == self.points[0]
-        if self.axes < point.cords[self.dimension_number]:
+        if self.axis < point.cords[self.dimension_number]:
             return self.right.check_contains(point)
         return self.left.check_contains(point)
     

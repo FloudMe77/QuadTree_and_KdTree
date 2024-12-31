@@ -86,10 +86,12 @@ class KdTreeNode:
         for _ in range(self.dimensions_amount):
             points.sort(key = lambda x: x.cords[self.dimension_number])
             median = math.ceil(len(points)/2)
+            median-=1
             median = self.bsearch_right(points,self.dimension_number,points[median].cords[self.dimension_number])
             left_median = self.bsearch_left(points,self.dimension_number,points[median].cords[self.dimension_number])
+            median+=1
 
-            if median - left_median > 3*len(points)//4:
+            if median - left_median > 3*len(points)//4 or median == len(points):
                 self.depth +=1
                 self.dimension_number = (self.dimension_number+1)%self.dimensions_amount
             else:
