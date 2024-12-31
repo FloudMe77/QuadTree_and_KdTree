@@ -42,7 +42,7 @@ class QuadTree:
     def insert(self, point):
         if point.amount_of_dimensions != 2:
             raise ValueError("Niepoprawny wymiar puntktów! \nQuadtree obsługuje tylko punkty dwueymiarowe!")
-        if not self.rectangle.contains(point):
+        if not self.rectangle.is_point_in_rectangle(point):
             return False
         if len(self.points) < self.max_points:
             self.points.append(point)
@@ -58,7 +58,7 @@ class QuadTree:
             return False
 
         for point in self.points:
-            if boundary.contains(point):
+            if boundary.is_point_in_rectangle(point):
                 found_points.append(point)
 
         if self.divided:
