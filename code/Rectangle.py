@@ -85,3 +85,6 @@ class Rectangle:
         lower_left_2 = Point(lower_left_2_cords)
         
         return Rectangle(lower_left_1,upper_right_1), Rectangle(lower_left_2,upper_right_2)
+
+    def contains(self, point):
+        return self.lower_left.precedens(point) and self.upper_right.follow(point)

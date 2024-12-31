@@ -3,6 +3,7 @@ from Point import Point
 from Rectangle import Rectangle
 import tests.generate_tests as test
 
+
 class QuadTree:
     # Struktura danych Quad-tree
 
@@ -29,8 +30,9 @@ class QuadTree:
         center = Point((c_x, c_y))
 
         bounds = (Point((x_1, y_1)), Point((x_2, y_2)), Point((x_2, y_1)), Point((x_1, y_2)))
+        print(1)
 
-        self.sw = QuadTree(Rectangle(bounds[0].lower_left(center), bounds[0].upper_right(center)), self.max_points, self.depth + 1)
+        self.sw = QuadTree(Rectangle(bounds[0].lower_left(center), bounds[0].upper_right(center)), max_points = self.max_points, depth = self.depth + 1)
         self.ne = QuadTree(Rectangle(bounds[1].lower_left(center), bounds[1].upper_right(center)), self.max_points, self.depth + 1)
         self.se = QuadTree(Rectangle(bounds[2].lower_left(center), bounds[2].upper_right(center)), self.max_points, self.depth + 1)
         self.nw = QuadTree(Rectangle(bounds[3].lower_left(center), bounds[3].upper_right(center)), self.max_points, self.depth + 1)
@@ -38,7 +40,9 @@ class QuadTree:
         self.divided = True
 
     def insert(self, point):
-        if not self.rectangle.is_contained(point):
+        if point.amount_of_dimensions != 2:
+            raise ValueError("Niepoprawny wymiar puntktów! \nQuadtree obsługuje tylko punkty dwueymiarowe!")
+        if not self.rectangle.contains(point):
             return False
         if len(self.points) < self.max_points:
             self.points.append(point)
@@ -54,7 +58,7 @@ class QuadTree:
             return False
 
         for point in self.points:
-            if self.se.is_contained(point):
+            if boundary.contains(point):
                 found_points.append(point)
 
         if self.divided:
@@ -63,3 +67,24 @@ class QuadTree:
             self.sw.search(boundary, found_points)
             self.nw.search(boundary, found_points)
         return found_points
+
+
+def build_quadtree(points_tuples, max_points = 3):
+    points, bounds = find_rectangle_conv_to_point(points_tuples)
+    print(points)
+    quadtree = QuadTree(bounds, max_points=max_points)
+    for point in points:
+        quadtree.insert(point)
+    return quadtree
+
+def find_rectangle_conv_to_point(points):
+    lower_left = points[0]
+    upper_right = points[0]
+    res = [Point(points[0])]
+
+    for point in points[1:]:
+        lower_left = [(min(lower_left[i], point[i])) for i in range(2)]
+        upper_right = [(max(upper_right[i], point[i])) for i in range(2)]
+        res.append(Point(point))
+    
+    return res, Rectangle(Point(lower_left), Point(upper_right))
