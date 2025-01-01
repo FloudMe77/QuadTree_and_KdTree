@@ -97,6 +97,16 @@ class QuadTree:
             self.nw.search(boundary, found_points)
         return found_points
 
+    def contains(self, point):
+        if type(point) == tuple:
+            point = Point(point)
+        if self.rectangle.is_point_in_rectangle(point):
+            if point in self.points:
+                return True
+            if self.divided:
+                return self.se.contains(point) or self.ne.contains(point) or self.sw.contains(point) or self.nw.contains(point)
+        return False
+
 def build_quadtree(points_tuples, max_points=3, visualizer=None):
     points, bounds = find_rectangle_conv_to_point(points_tuples)
     quadtree = QuadTree(bounds, max_points=max_points, visualizer=visualizer)
