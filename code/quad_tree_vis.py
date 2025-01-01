@@ -85,7 +85,7 @@ class QuadTree:
             )
         for point in self.points:
             if boundary.is_point_in_rectangle(point):
-                found_points.append(point)
+                found_points.append(point.cords)
                 if self.vis:
                     self.vis.add_point(point.cords, color="lime")
         self.vis.remove_figure(tmp)

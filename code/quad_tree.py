@@ -53,11 +53,11 @@ class QuadTree:
 
     def search(self, boundary, found_points):
         if not self.rectangle.is_intersect(boundary):
-            return False
+            return []
 
         for point in self.points:
             if boundary.is_point_in_rectangle(point):
-                found_points.append(point)
+                found_points.append(point.cords)
 
         if self.divided:
             self.se.search(boundary, found_points)
@@ -67,6 +67,15 @@ class QuadTree:
         return found_points
 
 
+    def contains(self, point):
+        if type(point) == tuple:
+            point = Point(point)
+        if self.rectangle.is_point_in_rectangle(point):
+            if point in self.points:
+                return True
+            if self.divided:
+                return self.se.contains(point) or self.ne.contains(point) or self.sw.contains(point) or self.nw.contains(point)
+        return False
 def build_quadtree(points_tuples, max_points = 3):
     points, bounds = find_rectangle_conv_to_point(points_tuples)
     quadtree = QuadTree(bounds, max_points=max_points)

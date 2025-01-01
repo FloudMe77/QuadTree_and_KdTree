@@ -7,7 +7,7 @@ from kd_tree import KdTree
 
 def get_sets_from_array(kd_ans, brute_ans):
     for i in range(len(kd_ans)):
-        kd_ans[i]=tuple(kd_ans[i])  
+        kd_ans[i]=tuple(kd_ans[i])
         brute_ans[i]=tuple(brute_ans[i])
     return set(kd_ans),set(brute_ans)
 
@@ -47,14 +47,14 @@ def run_grid_normal_test():
     _run_test_contains(points)
 
 def run_cross_on_axes_test():
-    points = test.cross_on_axes(100,-10,10,-10,10)
+    points = test.generate_cross_on_axes(100,-10,10,-10,10)
     ll = (-4,-3)
     ur = (4,8)
     _run_test_rectangle(points,ll,ur)
     _run_test_contains(points)
 
-def run_random_points_test():
-    points = test.random_points(100,-10,50,-10,50)
+def run_uniform_distribution_test():
+    points = test.generate_uniform_distribution(100,-10,50,-10,50)
     ll = (-4,-3)
     ur = (13,20)
     _run_test_rectangle(points,ll,ur)
