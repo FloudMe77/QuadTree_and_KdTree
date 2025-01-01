@@ -28,7 +28,7 @@ class QuadTree:
         center = Point((c_x, c_y))
 
         bounds = (Point((x_1, y_1)), Point((x_2, y_2)), Point((x_2, y_1)), Point((x_1, y_2)))
-        print(1)
+        # print(1)
 
         self.sw = QuadTree(Rectangle(bounds[0].lower_left(center), bounds[0].upper_right(center)), max_points = self.max_points, depth = self.depth + 1)
         self.ne = QuadTree(Rectangle(bounds[1].lower_left(center), bounds[1].upper_right(center)), self.max_points, self.depth + 1)
@@ -69,7 +69,6 @@ class QuadTree:
 
 def build_quadtree(points_tuples, max_points = 3):
     points, bounds = find_rectangle_conv_to_point(points_tuples)
-    print(points)
     quadtree = QuadTree(bounds, max_points=max_points)
     for point in points:
         quadtree.insert(point)

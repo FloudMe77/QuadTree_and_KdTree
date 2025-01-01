@@ -31,13 +31,13 @@ def generate_grid_normal(n, min_x,max_x,min_y,max_y):
             ans.append((min_x + i * gap_x, min_y + j * gap_y))
     return ans
 
-def generate_on_one_ax(n,min_x,max_x,y=0):
-    ans=[]
-    for _ in range(n):
-        ans.append((np.random.uniform(min_x,max_x),y))
-    return ans
+# def generate_on_one_ax(n,min_x,max_x,y=0):
+#     ans=[]
+#     for _ in range(n):
+#         ans.append((np.random.uniform(min_x,max_x),y))
+#     return ans
 
-def cross_on_axes(n,min_x,max_x,min_y,max_y):
+def generate_cross_on_axes(n,min_x,max_x,min_y,max_y):
     ans=[]
     for _ in range(n):
         if random.choice([True,False]):
@@ -46,7 +46,7 @@ def cross_on_axes(n,min_x,max_x,min_y,max_y):
             ans.append((0, np.random.uniform(min_y,max_y)))
     return ans
 
-def random_points(n,min_x,max_x,min_y,max_y):
+def generate_uniform_distribution(n,min_x,max_x,min_y,max_y):
     res=[]
     for _ in range(n):
         res.append((np.random.uniform(min_x,max_x),np.random.uniform(min_y,max_y)))
@@ -118,7 +118,7 @@ def generate_random_points_on_rectangle(n, min_x, max_x, min_y, max_y):
     return points
 
 def add_outliners(n,list,min_x,max_x,min_y,max_y):
-    outliners = random_points(n,5*min_x,5*max_x,5*min_y,5*max_y)
+    outliners = generate_uniform_distribution(n,5*min_x,5*max_x,5*min_y,5*max_y)
     return list+outliners
 
 def generate_standard_distribution(n,mean_x, mean_y, std_x, std_y):

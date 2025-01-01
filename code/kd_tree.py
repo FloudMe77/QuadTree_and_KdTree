@@ -192,7 +192,7 @@ class KdTreeNode:
         return self.left.check_contains(point)
     
 class KdTree:
-    def __init__(self, points, dimensions_amount, begining_axis=0, is_points_in_vertix = False):
+    def __init__(self, points, dimensions_amount, begining_axis=0, is_points_in_vertix = True):
         """
         inicjalizacja samej struktury kd_drzewa
 
