@@ -14,7 +14,7 @@ grid_constr_color = "tab:orange"
 vis_stack=[]
 tab_of_line=[]
 ########
-class KdTreeNode:
+class KdTreeNode_vis:
     def __init__(self,points, dimensions_amount,depth,rectangle, is_points_in_vertix=True):
         
         self.dimensions_amount = dimensions_amount
@@ -86,8 +86,8 @@ class KdTreeNode:
         self.line = (right_rec.lower_left.cords, left_rec.upper_right.cords)
         vis.remove_figure(vis_stack[-1])
         vis_stack.pop()
-        self.left = KdTreeNode(points[0:median], self.dimensions_amount, self.depth+1, left_rec, self.is_points_in_vertix )
-        self.right = KdTreeNode(points[median:], self.dimensions_amount, self.depth+1, right_rec, self.is_points_in_vertix )
+        self.left = KdTreeNode_vis(points[0:median], self.dimensions_amount, self.depth+1, left_rec, self.is_points_in_vertix )
+        self.right = KdTreeNode_vis(points[median:], self.dimensions_amount, self.depth+1, right_rec, self.is_points_in_vertix )
     
     def _split_region(self,rec, dimension_numer, axis):
         # jeden to dolny, czy tam po lewej
@@ -156,7 +156,7 @@ class KdTreeNode:
             return self.right.check_contains(point)
         return self.left.check_contains(point)
     
-class KdTree:
+class KdTree_vis:
     def __init__(self, points, dimensions_amount, begining_axis=0):
         # points jest tablicą krotek określających położenie punktu w przestrzeni
         self.points = deepcopy(points)
@@ -168,7 +168,7 @@ class KdTree:
         # oś w zdłuż której będzie pierwszy podział
         self.begining_axis = begining_axis
         # korzeń drzewa, reszta tworzy się rekursywnie
-        self.root = KdTreeNode(points, 
+        self.root = KdTreeNode_vis(points, 
                                dimensions_amount, 
                                begining_axis, 
                                Rectangle(list_of_Point=points))
@@ -202,8 +202,8 @@ class KdTree:
         return self.root.check_contains(point)
     
 vis=[]
-class visualization:
-    def give_visualization_of_create(self,test):
+class Visualization:
+    def give_visualization_of_create(self,test, draw_final=False, draw_gif=False, name = "kd_tree visualization"):
         global vis_stack
         global tab_of_line
         global vis
@@ -211,10 +211,14 @@ class visualization:
         tab_of_line = []
         vis = Visualizer()
         vis.clear()
-        self.kd_tree = KdTree(test,2)    
+        self.kd_tree = KdTree_vis(test,2)    
+        if draw_final:
+            self.draw_vis(name,vis)
+        if draw_gif:
+            self.draw_gif(name,vis)
         return vis
     
-    def give_visualization_of_search(self,find_ll,find_ur,print_output = False):
+    def give_visualization_of_search(self,find_ll,find_ur,draw_final=False, draw_gif=False, name = "kd_tree visualization",print_output = False):
         global vis
         global tab_of_line
         global vis_stack
@@ -228,4 +232,17 @@ class visualization:
             print(self.kd_tree.find_points_in_region(Rectangle(Point(find_ll),Point(find_ur))))
         else:
             self.kd_tree.find_points_in_region(Rectangle(Point(find_ll),Point(find_ur)))
+        
+        if draw_final:
+            self.draw_vis(name,vis)
+        if draw_gif:
+            self.draw_gif(name,vis)
         return vis
+    
+    def draw_gif(self, name, vis):
+        vis.add_title(name)
+        vis.show_gif()
+    
+    def draw_vis(self, name, vis):
+        vis.add_title(name)
+        vis.show()

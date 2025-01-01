@@ -1,6 +1,5 @@
 class Point:
     def __init__(self,cords):
-        # number only for debug
         self.cords = cords
         self.amount_of_dimensions = len(self.cords)
 
