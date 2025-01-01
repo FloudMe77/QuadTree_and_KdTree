@@ -96,8 +96,9 @@ def start_generate_test():
             correct += 1
             str += "Z "
     print("----------------------------------------------------")
-    print(f"Zaliczone {correct}/{n_test}")
+    print(f"Zaliczone {correct}/{n_test} testów")
     print(str)
+    print("----------------------------------------------------")
 
 
 # nie wiem czy jest potrzebne skoro poprzednie testy były bardziej wymagające niż to
