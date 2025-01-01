@@ -1,7 +1,5 @@
-import math
 from Point import Point
 from Rectangle import Rectangle
-import tests.generate_tests as test
 
 
 class QuadTree:
