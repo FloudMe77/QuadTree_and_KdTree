@@ -1,6 +1,3 @@
-# testy zarówno zawierania się jak i znajdowania punktów
-# dla całkowitoliczbowych i zmiennoprzecinkowych
-# losowe testy na wszystkich randomowych testach
 import tests.generate_tests as test
 import brute_force as brute
 from kd_tree import KdTree
@@ -101,13 +98,3 @@ def start_generate_test():
     print("----------------------------------------------------")
 
 
-# nie wiem czy jest potrzebne skoro poprzednie testy były bardziej wymagające niż to
-# a to jest z wiki
-def intiger_cords_rectangle():
-    pass
-def float_cords_rectangle():
-    pass
-def intiger_cords_point_search():
-    pass
-def float_cords_rectangle_point_search():
-    pass
