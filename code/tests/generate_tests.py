@@ -31,12 +31,6 @@ def generate_grid_normal(n, min_x,max_x,min_y,max_y):
             ans.append((min_x + i * gap_x, min_y + j * gap_y))
     return ans
 
-# def generate_on_one_ax(n,min_x,max_x,y=0):
-#     ans=[]
-#     for _ in range(n):
-#         ans.append((np.random.uniform(min_x,max_x),y))
-#     return ans
-
 def generate_cross_on_axes(n,min_x,max_x,min_y,max_y):
     ans=[]
     for _ in range(n):

@@ -218,16 +218,26 @@ class Visualization:
             self.draw_gif(name,vis)
         return vis
     
-    def give_visualization_of_search(self,find_ll,find_ur,draw_final=False, draw_gif=False, name = "kd_tree visualization",print_output = False):
+    def give_visualization_of_search(self,region,draw_final=False, draw_gif=False, name = "kd_tree visualization",print_output = False):
         global vis
         global tab_of_line
         global vis_stack
+        if not isinstance(region, Rectangle):
+            if len(region) == 2 and \
+                 len(region[0])==2 and \
+                 len(region[1])==2: 
+                lower_left = Point(region[0])
+                upper_right = Point(region[1])
+                region = Rectangle(lower_left,upper_right)
+            else:
+                raise ValueError("otrzymany region jest niepoprawny")
+        find_ll = region.lower_left.cords
+        find_ur = region.upper_right.cords
         vis_stack = []
         vis = Visualizer()
         vis.clear()
         vis.add_point(self.kd_tree.points,color = added_to_structer_color)
-        for ll,ur in tab_of_line:
-            vis.add_line_segment((ll,ur),color=grid_constr_color,alpha = 0.4)
+        vis.add_line_segment(tab_of_line,color=grid_constr_color,alpha = 0.4)
         if print_output:
             print(self.kd_tree.find_points_in_region(Rectangle(Point(find_ll),Point(find_ur))))
         else:
