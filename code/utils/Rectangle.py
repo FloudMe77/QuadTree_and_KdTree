@@ -1,4 +1,4 @@
-from Point import Point
+from utils.Point import Point
 from copy import deepcopy
 
 class Rectangle:

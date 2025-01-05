@@ -1,5 +1,5 @@
-from Point import Point
-from Rectangle import Rectangle
+from utils.Point import Point
+from utils.Rectangle import Rectangle
 from visualizer_bit.main import Visualizer
 
 class QuadTree:
