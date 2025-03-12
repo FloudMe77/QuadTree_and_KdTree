@@ -1,6 +1,6 @@
 import math
-from Point import Point
-from Rectangle import Rectangle
+from utils.Point import Point
+from utils.Rectangle import Rectangle
 from copy import deepcopy
 # import tests.generate_tests as test
 class KdTreeNode:
